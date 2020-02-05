@@ -7,22 +7,28 @@ import RecipientController from './app/controllers/RecipientController';
 import FileController from './app/controllers/FileController';
 import DeliveryManController from './app/controllers/DeliveryManController';
 
-import authMiddleware from './app/middlewares/auth';
-import recipientMiddleware from './app/middlewares/recipientStore';
+import AuthMiddleware from './app/middlewares/auth';
+/**
+ * Validation Middlewares
+ */
+import RecipientValidationMiddleware from './app/middlewares/validation/recipientValidation';
+import DeliveryManValidationMiddleware from './app/middlewares/validation/deliveryManValidation';
+import DeliveryManActiveValidation from './app/middlewares/validation/DeliveryManActiveValidation';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
 
-routes.use(authMiddleware);//Routes that need authentication after this line
+routes.use(AuthMiddleware);//Routes that need authentication after this line
 routes.get('/recipients', RecipientController.index);
-routes.post('/recipients', recipientMiddleware, RecipientController.store);
-routes.put('/recipients/:id', recipientMiddleware, RecipientController.update);
+routes.post('/recipients', RecipientValidationMiddleware, RecipientController.store);
+routes.put('/recipients/:id', RecipientValidationMiddleware, RecipientController.update);
 
 routes.get('/deliverymen', DeliveryManController.index);
-routes.post('/deliverymen', DeliveryManController.store);
-routes.delete('/deliverymen/:id', DeliveryManController.delete);
+routes.post('/deliverymen', DeliveryManValidationMiddleware, DeliveryManController.store);
+routes.put('/deliverymen/:id', DeliveryManActiveValidation, DeliveryManValidationMiddleware, DeliveryManController.update);
+routes.delete('/deliverymen/:id',DeliveryManActiveValidation, DeliveryManController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
