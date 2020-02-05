@@ -1,6 +1,5 @@
 import DeliveryMan from '../models/DeliveryMan';
 import File from '../models/File';
-import * as Yup from 'yup';
 
 class DeliveryManController{
   async index(req, res){
