@@ -1,4 +1,5 @@
 import DeliveryMan from '../models/DeliveryMan';
+import File from '../models/File';
 import * as Yup from 'yup';
 
 class DeliveryManController{
@@ -7,7 +8,14 @@ class DeliveryManController{
       where : {
         inactive: false,
       },
-      attributes: ['name', 'email']
+      attributes: ['name', 'email', 'avatar_id'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
     return res.json(deliveryMen);
@@ -24,10 +32,10 @@ class DeliveryManController{
     const deliveryMan = await DeliveryMan.findByPk(req.params.id);
 
     await deliveryMan.update(req.body);
-    const { name, email } = deliveryMan;
+    const { name, email, avatar_id } = deliveryMan;
 
 
-    return res.json({name, email});
+    return res.json({name, email, avatar_id});
   }
 
   async delete(req, res){
