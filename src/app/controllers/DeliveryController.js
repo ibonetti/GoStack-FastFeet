@@ -46,23 +46,20 @@ class DeliveryManController{
   }
 
   async update(req, res){
-    const deliveryMan = await DeliveryMan.findByPk(req.params.id);
+    const delivery = await Delivery.findByPk(req.params.id);
 
-    await deliveryMan.update(req.body);
-    const { name, email, avatar_id } = deliveryMan;
+    await delivery.update(req.body);
 
-
-    return res.json({name, email, avatar_id});
+    return res.json(delivery);
   }
 
   async delete(req, res){
     const { id } = req.params;
-    const deliveryMan = await DeliveryMan.findByPk(id);
+    const delivery = await Delivery.findByPk(id);
 
-    deliveryMan.inactive = true;
-    deliveryMan.save();
+    await delivery.destroy();
 
-    return res.json(deliveryMan);
+    return res.json({});
   }
 }
 
