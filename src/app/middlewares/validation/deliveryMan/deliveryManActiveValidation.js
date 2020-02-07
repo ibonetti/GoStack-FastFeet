@@ -1,4 +1,4 @@
-import DeliveryMan from '../../models/DeliveryMan';
+import DeliveryMan from '../../../models/DeliveryMan';
 
 export default async (req, res, next) => {
   const deliveryMan = await DeliveryMan.findByPk(req.params.id);

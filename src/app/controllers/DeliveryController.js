@@ -1,8 +1,7 @@
 import DeliveryMan from '../models/DeliveryMan';
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
-import File from '../models/File';
-import * as Yup from 'yup';
+import Mail from '../../lib/Mail';
 
 class DeliveryManController{
   async index(req, res){
@@ -31,18 +30,37 @@ class DeliveryManController{
   }
 
   async store(req, res){
-    const schema = Yup.object().shape({
-      recipient_id: Yup.number().required(),
-      deliveryman_id: Yup.number().required(),
-      product: Yup.string().required(),
+    const delivery = await Delivery.create(req.body);
+    const deliveryDet = await Delivery.findByPk(delivery.id, {
+      attributes: ['product', 'start_date'],
+      include: [
+        {
+          model: DeliveryMan,
+          as: 'deliveryman',
+          attributes: ['name', 'email'],
+        },
+        {
+          model:Recipient,
+          as: 'recipient',
+          attributes: ['name', 'city', 'street', 'number', 'state', 'city']
+        },
+      ],
     });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation Fails ' });
-    }
-    const delivery = await Delivery.create(req.body);
+    await Mail.sendMail({
+      to: `${deliveryDet.deliveryman.name} <${deliveryDet.deliveryman.email}>`,
+      subject: 'New Delivery waiting for you',
+      template: 'newdelivery',
+      context: {
+        deliveryman: deliveryDet.deliveryman.name,
+        product: deliveryDet.product,
+        recipient: deliveryDet.recipient.name,
+        address: `${deliveryDet.recipient.street}, ${deliveryDet.recipient.number}
+                    - ${deliveryDet.recipient.city}/${deliveryDet.recipient.state}`,
+      },
+    });
 
-    return res.json(delivery);
+    return res.json(deliveryDet);
   }
 
   async update(req, res){

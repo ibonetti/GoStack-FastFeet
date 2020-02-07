@@ -12,9 +12,11 @@ import AuthMiddleware from './app/middlewares/auth';
 /**
  * Validation Middlewares
  */
-import RecipientValidationMiddleware from './app/middlewares/validation/recipientValidation';
-import DeliveryManValidationMiddleware from './app/middlewares/validation/deliveryManValidation';
-import DeliveryManActiveValidation from './app/middlewares/validation/DeliveryManActiveValidation';
+import RecipientValidationMiddleware from './app/middlewares/validation/recipient/recipientValidation';
+import DeliveryManValidationMiddleware from './app/middlewares/validation/deliveryMan/deliveryManValidation';
+import DeliveryManActiveValidation from './app/middlewares/validation/deliveryMan/DeliveryManActiveValidation';
+import DeliveryValidationMiddleware from './app/middlewares/validation/delivery/deliveryValidation';
+import DeliveryExistsValidationMiddleware from './app/middlewares/validation/delivery/deliveryExistsValidation';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -31,10 +33,10 @@ routes.post('/deliverymen', DeliveryManValidationMiddleware, DeliveryManControll
 routes.put('/deliverymen/:id', DeliveryManActiveValidation, DeliveryManValidationMiddleware, DeliveryManController.update);
 routes.delete('/deliverymen/:id',DeliveryManActiveValidation, DeliveryManController.delete);
 
-routes.post('/deliveries', DeliveryController.store);
+routes.post('/deliveries', DeliveryValidationMiddleware, DeliveryController.store);
 routes.get('/deliveries', DeliveryController.index);
-routes.put('/deliveries/:id', DeliveryController.update);
-routes.delete('/deliveries/:id', DeliveryController.delete);
+routes.put('/deliveries/:id', DeliveryExistsValidationMiddleware, DeliveryValidationMiddleware, DeliveryController.update);
+routes.delete('/deliveries/:id', DeliveryExistsValidationMiddleware, DeliveryController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
