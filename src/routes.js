@@ -9,6 +9,7 @@ import DeliveryManController from './app/controllers/DeliveryManController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryManDelivery from './app/controllers/DeliveryManDelivery';
 import PickUpDelivery from './app/controllers/PickUpDelivery';
+import EndDelivery from './app/controllers/EndDelivery';
 
 import AuthMiddleware from './app/middlewares/auth';
 /**
@@ -24,8 +25,9 @@ const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
-routes.get('/deliveryman/:id/delivery/:status', DeliveryManDelivery.index);
-routes.post('/deliveryman/:id/pickupdelivery/:deliveryid', PickUpDelivery.store);
+routes.get('/deliveryman/:id/delivery/:status',DeliveryManActiveValidation, DeliveryManDelivery.index);
+routes.post('/deliveryman/:id/pickupdelivery/:deliveryid',DeliveryManActiveValidation, PickUpDelivery.store);
+routes.post('/deliveryman/:id/enddelivery/:deliveryid',DeliveryManActiveValidation, EndDelivery.store);
 //routes.put('/deliveryman/:id/delivery/:deliveryId/deliver', DeliveryManDelivery.update);
 
 routes.use(AuthMiddleware);//Routes that need authentication after this line

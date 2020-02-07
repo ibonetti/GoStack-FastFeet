@@ -1,5 +1,4 @@
 import Delivery from '../models/Delivery';
-import DeliveryMan from '../models/DeliveryMan';
 import {parseISO, isBefore, isAfter, setHours, startOfHour, startOfDay, endOfDay} from 'date-fns';
 import { Op } from 'sequelize';
 
