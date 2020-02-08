@@ -1,7 +1,7 @@
 import Delivery from '../models/Delivery';
 import File from '../models/File';
 
-class EndDeliveryControler{
+class EndDeliveryController{
   async store(req, res){
     const { id, deliveryid } = req.params;
     const { signatureId } = req.body;
@@ -39,4 +39,4 @@ class EndDeliveryControler{
   }
 }
 
-export default new EndDeliveryControler();
+export default new EndDeliveryController();

@@ -2,11 +2,10 @@ import Delivery from '../models/Delivery';
 import {parseISO, isBefore, isAfter, setHours, startOfHour, startOfDay, endOfDay} from 'date-fns';
 import { Op } from 'sequelize';
 
-class PickUpDelivery{
+class PickUpDeliveryController {
   async store(req, res){
     const { id, deliveryid } = req.params;
-    const { startDate } = req.body;
-    const date = parseISO(startDate);
+    const date = new Date();
 
     const deliveriesCount = await Delivery.count({
       where:{
@@ -49,4 +48,4 @@ class PickUpDelivery{
   }
 }
 
-export default new PickUpDelivery();
+export default new PickUpDeliveryController();
